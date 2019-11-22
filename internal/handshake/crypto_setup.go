@@ -221,13 +221,6 @@ func (h *cryptoSetup) ChangeConnectionID(id protocol.ConnectionID) {
 
 func (h *cryptoSetup) SetLargest1RTTAcked(pn protocol.PacketNumber) {
 	h.aead.SetLargestAcked(pn)
-	// drop handshake keys
-	if h.handshakeOpener != nil {
-		h.handshakeOpener = nil
-		h.handshakeSealer = nil
-		h.logger.Debugf("Dropping Handshake keys.")
-		h.runner.DropKeys(protocol.EncryptionHandshake)
-	}
 }
 
 func (h *cryptoSetup) RunHandshake() {

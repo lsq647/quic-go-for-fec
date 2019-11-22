@@ -105,6 +105,11 @@ func NewSentPacketHandler(
 func (h *sentPacketHandler) DropPackets(encLevel protocol.EncryptionLevel) {
 	// remove outstanding packets from bytes_in_flight
 	pnSpace := h.getPacketNumberSpace(encLevel)
+	// Packet number space might have been dropped already.
+	// This can happen when receiving a duplicate HANDSHAKE_DONE frame.
+	if pnSpace == nil {
+		return
+	}
 	pnSpace.history.Iterate(func(p *Packet) (bool, error) {
 		if p.includedInBytesInFlight {
 			h.bytesInFlight -= p.Length

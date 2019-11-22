@@ -809,6 +809,13 @@ var _ = Describe("SentPacketHandler", func() {
 			Expect(handler.bytesInFlight).To(Equal(protocol.ByteCount(10)))
 			Expect(handler.handshakePackets).To(BeNil())
 		})
+
+		It("tolerates multiple calls to DropPackets", func() {
+			handler.DropPackets(protocol.EncryptionInitial)
+			handler.DropPackets(protocol.EncryptionInitial)
+			handler.DropPackets(protocol.EncryptionHandshake)
+			handler.DropPackets(protocol.EncryptionHandshake)
+		})
 	})
 
 	Context("peeking and popping packet number", func() {
